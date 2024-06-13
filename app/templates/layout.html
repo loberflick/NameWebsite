@@ -1,5 +1,15 @@
-<!DOCTYPE html>
-<body>
-    {% block content %}
-    {% endblock%}
-</body>
+<!doctype html>
+
+<html>
+    <head>
+        <title>Name Website</title>
+    </head>
+
+    <body>
+        {% include 'nav.html' %}
+        {% block content %}
+        {% endblock %}
+        {% include 'footer.html' %}
+    </body>
+
+</html>
