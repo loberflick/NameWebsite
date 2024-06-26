@@ -11,21 +11,37 @@ WTF_CSRF_ENABLED = True
 WTF_CSRF_SECRET_KEY = 'evenmoresecretkey'
 db.init_app(app)
 
-#import app.models as models
-#from app.forms import Add_Pizza
+import app.models as models
+from app.forms import Add_Account
 
 # Home Route
 @app.route("/")
 def home():
     return render_template("index.html")
 
-@app.route("/signup")
-def sign_up():
-    return render_template("index.html")
-
-@app.route("/login")
+@app.route("/login", methods=["GET", "POST"])
 def login():
-    return render_template("index.html")
+    form = Add_Account()
+    if request.method == "GET":
+        return render_template("login.html", form=form)
+    else:
+        accounts = models.Account.query.filter_by(username=form.username.data).first()
+        print(accounts)
+        return redirect("/")
+
+@app.route("/signup", methods=["GET", "POST"])
+def sign_up():
+    print(request.method)
+    form = Add_Account()
+    if request.method == "GET":
+        return render_template("login.html", form=form)
+    else:
+        new_account = models.Account()
+        new_account.username = form.username.data
+        new_account.password = form.password.data
+        db.session.add(new_account)
+        db.session.commit()
+        return redirect("/")
 
 #@app.route('/add_pizza', methods = ["GET", "POST"])
 #def add_pizza():
