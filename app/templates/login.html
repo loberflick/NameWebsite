@@ -2,6 +2,9 @@
 {% block content %}
 
 <form action="/login" method="post">
+    {% if login == False %}
+    <P>Invail username or password</P>
+    {% endif %}
     <label>Username:</label>
     <p>{{ form.username }}</p>
     <label>Password:</label>
