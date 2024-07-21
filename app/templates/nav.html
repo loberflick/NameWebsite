@@ -1,5 +1,8 @@
 <nav>
-    <a href="/">Home |</a> 
-    <a href="/login">Login |</a> 
-    <a href="/signup">Sign up|</a> 
+    <a href="/">Home |</a>
+    {{logedin}}
+    {% if logedin == False %}
+    <a href="/login">Login |</a>
+    {% endif %}
+    <a href="/add_class">Add class</a> 
 </nav>
