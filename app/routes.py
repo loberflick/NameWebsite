@@ -9,7 +9,7 @@ from string import ascii_letters, digits
 basedir = os.path.abspath(os.path.dirname(__file__))
 db = SQLAlchemy()
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, "classes.db")
-app.secret_key = 'supersecretkey'
+app.config['SECRET_KEY'] = 'supersecretkey'
 WTF_CSRF_ENABLED = True
 WTF_CSRF_SECRET_KEY = 'evenmoresecretkey'
 db.init_app(app)
@@ -25,12 +25,12 @@ from app.forms import Add_Account, Add_Class
 # Home Route
 @app.route("/")
 def home():
-    print(request.cookies.get("login_token"))
     return render_template("index.html", logedin=find_login(request.cookies.get("login_token")))
 
 # login to an account and store a cookie corresponding to the account
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    print(request.cookies)
     form = Add_Account()
     if request.method == "GET":
         return render_template("login.html", form=form, login=True, logedin=find_login(request.cookies.get("login_token")))
@@ -39,12 +39,10 @@ def login():
         accounts = models.Account.query.filter_by(username=form.username.data).first()
         if str(password) == str(accounts.password):
             gen_token = generate_token()
-            login_sessions.update({gen_token: accounts.id})
-            resp = make_response("set cookie")
+            resp = make_response(redirect("/"))
             resp.set_cookie("login_token", gen_token)
-            print(login_sessions)
-
-            return redirect("/")
+            login_sessions.update({gen_token: accounts.id})
+            return resp
         else:
             return render_template("login.html", form=form, login=False)
 
@@ -72,6 +70,7 @@ def generate_token():
 
 
 def find_login(token):
+    print(login_sessions)
     id = login_sessions.get(token)
     print(id, token)
     if id is None:
@@ -85,7 +84,7 @@ def find_login(token):
 def add_class():
     form = Add_Class()
     if request.method == "GET":
-        return render_template("add_class.html", form=form)
+        return render_template("add_class.html", form=form, logedin=find_login(request.cookies.get("login_token")))
     elif request.method == "POST":
         new_class = models.Class()
         new_class.name = form.name.data
@@ -93,13 +92,18 @@ def add_class():
         db.session.add(new_class)
         db.session.commit()
         return redirect("/")
-    return render_template("add_class.html", form=form)
+    return render_template("add_class.html", form=form, logedin=find_login(request.cookies.get("login_token")))
 
 @app.route("/class/<int:id>", methods=["GET", "POST"])
 def view_class(id):
     _class = models.Class.query.filter_by(id=id).first()
     print(_class.teacher)
     return render_template("class.html")
+
+
+def quick_template(page, form):
+    return render_template(page, form, logedin=find_login(request.cookies.get("login_token")))
+
 
 # @app.route('/add_pizza', methods = ["GET", "POST"])
 # def add_pizza():
