@@ -23,7 +23,7 @@ class Class(db.Model):
     name = db.Column(db.Text())
     description = db.Column(db.Text())
     picture = db.Column(db.Text())
-    teacher= db.Column(db.Integer())
+    teacher = db.Column(db.Integer())
 
     students = db.relationship("Student", secondary="StudentClass", back_populates="classes")
 

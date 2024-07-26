@@ -3,5 +3,7 @@
     {% if logedin == False %}
     <a href="/login">Login |</a>
     {% endif %}
+    {% if logedin != False %}
     <a href="/add_class">Add class</a> 
+    {% endif %}
 </nav>

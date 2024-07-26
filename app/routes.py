@@ -88,7 +88,8 @@ def add_class():
     elif request.method == "POST":
         new_class = models.Class()
         new_class.name = form.name.data
-        new_class.image = form.image.data
+        new_class.image = form.picture.data
+        new_class.teacher = find_login(request.cookies.get("login_token"))
         db.session.add(new_class)
         db.session.commit()
         return redirect("/")
@@ -98,7 +99,7 @@ def add_class():
 def view_class(id):
     _class = models.Class.query.filter_by(id=id).first()
     print(_class.teacher)
-    return render_template("class.html")
+    return render_template("class.html", logedin=find_login(request.cookies.get("login_token")), _class=_class)
 
 
 def quick_template(page, form):
