@@ -5,4 +5,22 @@
     {{_class.name}}
 </h1>
 
+<br>
+
+<h2>
+    Add Student
+</h2>
+<p1>
+    <form action="/class/{{id}}"  method="post">
+        Students Name<br>
+    
+        {{form.name(placeholder='Student name')}}<br>
+        Students ID<br>
+        {{form.student_id(placeholder='Student ID')}}<br>
+        {{form.picture}}<br>
+        <input type="submit">
+    </form>
+
+</p1>
+
 {% endblock %}

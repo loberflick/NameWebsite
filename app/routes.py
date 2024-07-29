@@ -20,7 +20,7 @@ token_length = 16
 
 
 import app.models as models
-from app.forms import Add_Account, Add_Class
+from app.forms import Add_Account, Add_Class, Add_Student
 
 # Home Route
 @app.route("/")
@@ -103,16 +103,24 @@ def classes():
     return render_template('classes.html', logedin=find_login(request.cookies.get("login_token")), classes=classes)
 
 
-
 @app.route("/class/<int:id>", methods=["GET", "POST"])
 def view_class(id):
+    form = Add_Student()
     _class = models.Class.query.filter_by(id=id).first()
-    if _class.teacher == find_login(request.cookies.get("login_token")):
-        print(_class.teacher)
-        return render_template("class.html", logedin=find_login(request.cookies.get("login_token")), _class=_class)
-    else:
-        return render_template("restricted.html", logedin=find_login(request.cookies.get("login_token")))
-
+    if request.method == "GET":
+        if _class.teacher == find_login(request.cookies.get("login_token")):
+            print(_class.teacher)
+        else:
+            return render_template("restricted.html", logedin=find_login(request.cookies.get("login_token")))
+    elif request.method == "POST":
+        print("new studetn")
+        new_student = models.Student()
+        new_student.name = form.name.data
+        new_student.picture = form.picture.data
+        new_student.student_id = form.student_id.data
+        db.session.add(new_student)
+        db.session.commit()
+    return render_template("class.html", logedin=find_login(request.cookies.get("login_token")), _class=_class, form=form, id=id)
 
 def quick_template(page, form):
     return render_template(page, form, logedin=find_login(request.cookies.get("login_token")))
