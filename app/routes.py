@@ -95,11 +95,23 @@ def add_class():
         return redirect("/")
     return render_template("add_class.html", form=form, logedin=find_login(request.cookies.get("login_token")))
 
+
+@app.route('/classes')
+def classes():
+    id = find_login(request.cookies.get("login_token"))
+    classes = models.Class.query.filter_by(teacher=id)
+    return render_template('classes.html', logedin=find_login(request.cookies.get("login_token")), classes=classes)
+
+
+
 @app.route("/class/<int:id>", methods=["GET", "POST"])
 def view_class(id):
     _class = models.Class.query.filter_by(id=id).first()
-    print(_class.teacher)
-    return render_template("class.html", logedin=find_login(request.cookies.get("login_token")), _class=_class)
+    if _class.teacher == find_login(request.cookies.get("login_token")):
+        print(_class.teacher)
+        return render_template("class.html", logedin=find_login(request.cookies.get("login_token")), _class=_class)
+    else:
+        return render_template("restricted.html", logedin=find_login(request.cookies.get("login_token")))
 
 
 def quick_template(page, form):

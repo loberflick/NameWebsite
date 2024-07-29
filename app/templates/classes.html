@@ -1,0 +1,8 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+{% for group in classes %}
+<a href="/class/{{group.id}}">{{group.name}}</br>
+{% endfor %}
+
+{% endblock %}
