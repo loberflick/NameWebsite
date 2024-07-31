@@ -22,10 +22,12 @@ token_length = 16
 import app.models as models
 from app.forms import Add_Account, Add_Class, Add_Student
 
+
 # Home Route
 @app.route("/")
 def home():
     return render_template("index.html", logedin=find_login(request.cookies.get("login_token")))
+
 
 # login to an account and store a cookie corresponding to the account
 @app.route("/login", methods=["GET", "POST"])
@@ -46,6 +48,7 @@ def login():
         else:
             return render_template("login.html", form=form, login=False)
 
+
 # Add a new account too the database
 @app.route("/signup", methods=["GET", "POST"])
 def sign_up():
@@ -60,6 +63,7 @@ def sign_up():
         db.session.add(new_account)
         db.session.commit()
         return redirect("/")
+
 
 # Generate a unique token and return it
 def generate_token():
@@ -77,7 +81,6 @@ def find_login(token):
         return False
     else:
         return id
-
 
 
 @app.route("/add_class", methods=["GET","POST"])
@@ -118,9 +121,12 @@ def view_class(id):
         new_student.name = form.name.data
         new_student.picture = form.picture.data
         new_student.student_id = form.student_id.data
+        new_student.classes.append = _class
+        print(new_student.classes)
         db.session.add(new_student)
         db.session.commit()
     return render_template("class.html", logedin=find_login(request.cookies.get("login_token")), _class=_class, form=form, id=id)
+
 
 def quick_template(page, form):
     return render_template(page, form, logedin=find_login(request.cookies.get("login_token")))

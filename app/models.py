@@ -36,7 +36,7 @@ class Student(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     name = db.Column(db.Text())
-    image = db.Column(db.Text())
+    picture = db.Column(db.Text())
     student_id = db.Column(db.Text())
 
     classes = db.relationship("Class", secondary="StudentClass", back_populates="students")
