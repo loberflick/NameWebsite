@@ -114,15 +114,14 @@ def view_class(id):
         if _class.teacher == find_login(request.cookies.get("login_token")):
             print(_class.teacher)
         else:
-            return render_template("restricted.html", logedin=find_login(request.cookies.get("login_token")))
+            return render_template("restricted.html", _class=_class,logedin=find_login(request.cookies.get("login_token")))
     elif request.method == "POST":
         print("new studetn")
         new_student = models.Student()
         new_student.name = form.name.data
         new_student.picture = form.picture.data
         new_student.student_id = form.student_id.data
-        new_student.classes.append = _class
-        print(new_student.classes)
+        new_student.classes.append(_class)
         db.session.add(new_student)
         db.session.commit()
     return render_template("class.html", logedin=find_login(request.cookies.get("login_token")), _class=_class, form=form, id=id)
