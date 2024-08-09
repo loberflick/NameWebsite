@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import IntegerField, StringField, TextAreaField, SelectField, SelectMultipleField, FileField
+from wtforms import IntegerField, StringField, TextAreaField, SelectField, SelectMultipleField, FileField, RadioField
 from wtforms.validators import DataRequired, Optional, ValidationError
 import app.models
 
@@ -17,6 +17,8 @@ class Add_Class(FlaskForm):
 
 class Add_Student(FlaskForm):
     name = StringField('name', validators=[DataRequired()])
-    picture = FileField('name', validators=[DataRequired()])
-    student_id = IntegerField('name', validators=[DataRequired()])
+    picture = FileField('picture', validators=[DataRequired()])
+    student_id = IntegerField('student id', validators=[DataRequired()])
 
+class Quiz(FlaskForm):
+    anwsers = RadioField('anwser1')

@@ -20,7 +20,7 @@ token_length = 16
 
 
 import app.models as models
-from app.forms import Add_Account, Add_Class, Add_Student
+from app.forms import Add_Account, Add_Class, Add_Student, Quiz
 
 
 # Home Route
@@ -112,7 +112,7 @@ def view_class(id):
     _class = models.Class.query.filter_by(id=id).first()
     if request.method == "GET":
         if _class.teacher == find_login(request.cookies.get("login_token")):
-            print(_class.teacher)
+            pass
         else:
             return render_template("restricted.html", _class=_class,logedin=find_login(request.cookies.get("login_token")))
     elif request.method == "POST":
@@ -125,6 +125,18 @@ def view_class(id):
         db.session.add(new_student)
         db.session.commit()
     return render_template("class.html", logedin=find_login(request.cookies.get("login_token")), _class=_class, form=form, id=id)
+
+@app.routes("/quiz/1/<int:id>", methods=["GET", "POST"])
+def quiz():
+    form = Quiz()
+    students = models.Class.query.filter_by(id=id).first()
+    if students.teacher == find_login(request.cookies.get("login_token")):
+        pass
+    else:
+        return render_template("restricted.html", _class=_class,logedin=find_login(request.cookies.get("login_token")))
+    print(students)
+    form.anwsers.choices = []
+    return render_template("quiz1.html", logedin=find_login(request.cookies.get("login_token")), form=form)
 
 
 def quick_template(page, form):

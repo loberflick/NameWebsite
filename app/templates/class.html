@@ -4,12 +4,15 @@
 <h1>
     {{_class.name}}
 </h1>
-
 <br>
 
+{% for i in _class.students %}
+{{i.name}}
+{% endfor %}
 <h2>
     Add Student
 </h2>
+
 <p1>
     <form action="/class/{{id}}"  method="post">
         Students Name<br>
