@@ -9,6 +9,11 @@
 {% for i in _class.students %}
 {{i.name}}
 {% endfor %}
+
+<a href="/new_quiz/{{id}}">
+    start quiz
+</a>
+
 <h2>
     Add Student
 </h2>
@@ -23,7 +28,6 @@
         {{form.picture}}<br>
         <input type="submit">
     </form>
-
 </p1>
 
 {% endblock %}

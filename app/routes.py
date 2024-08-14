@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 import os
 from random import choices
 from string import ascii_letters, digits
-
+from random import shuffle
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 db = SQLAlchemy()
@@ -17,6 +17,8 @@ db.init_app(app)
 # {"token": id}
 login_sessions = {}
 token_length = 16
+# {id: quiz()}
+current_quizzes = {}
 
 
 import app.models as models
@@ -126,17 +128,50 @@ def view_class(id):
         db.session.commit()
     return render_template("class.html", logedin=find_login(request.cookies.get("login_token")), _class=_class, form=form, id=id)
 
-@app.routes("/quiz/1/<int:id>", methods=["GET", "POST"])
-def quiz():
+
+class Question():
+    option1 = ""
+    option2 = ""
+    option3 = ""
+    option4 = ""
+
+    anwser = ""
+
+
+@app.route("/new_quiz/<int:id>", methods=["GET", "POST"])
+def new_quiz(id):
+    _class = models.Class.query.filter_by(id=id).first()
+    students = []
+    for student in _class.students:
+        print(student.name)
+        students.append(students)
+    shuffle(students)
+    if request.method == "GET":
+        new_quiz = Question()
+        new_quiz.option1 = students[0].name
+        new_quiz.option2 = students[1].name
+        new_quiz.option3 = students[2].name
+        new_quiz.option4 = students[3].name
+
+        new_quiz.awnser = students[3].name
+        current_quizzes.update({find_login(request.cookies.get("login_token")): new_quiz})
+        return redirect("quiz/1/" + str(id))
+
+
+@app.route("/quiz/1/<int:id>", methods=["GET", "POST"])
+def quiz(id):
     form = Quiz()
-    students = models.Class.query.filter_by(id=id).first()
-    if students.teacher == find_login(request.cookies.get("login_token")):
+    _class = models.Class.query.filter_by(id=id).first()
+
+    if _class.teacher == find_login(request.cookies.get("login_token")):
         pass
     else:
-        return render_template("restricted.html", _class=_class,logedin=find_login(request.cookies.get("login_token")))
-    print(students)
-    form.anwsers.choices = []
-    return render_template("quiz1.html", logedin=find_login(request.cookies.get("login_token")), form=form)
+        return render_template("restricted.html", _class=_class, logedin=find_login(request.cookies.get("login_token")))
+    for i in _class.students:
+        print(i.name)
+    quiz = current_quizzes[find_login(request.cookies.get("login_token"))]
+    form.anwsers.choices = [quiz.option1, quiz.option2, quiz.option3, quiz.option4]
+    return render_template("quiz1.html", logedin=find_login(request.cookies.get("login_token")), form=form, _class=_class)
 
 
 def quick_template(page, form):
