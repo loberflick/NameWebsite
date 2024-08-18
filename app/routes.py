@@ -141,6 +141,8 @@ class Question():
 
     anwser = ""
 
+    def rand_ans():
+        anwser = choices([quiz.option1, quiz.option2, quiz.option3, quiz.option4])
 
 @app.route("/new_quiz/<int:id>", methods=["GET", "POST"])
 def new_quiz(id):
@@ -181,6 +183,7 @@ def quiz(id):
         if form.guess.data == quiz.anwser:
             return render_template("quiz1.html", logedin=find_login(request.cookies.get("login_token")), form=form, _class=_class, correct=True)
         else:
+            form.guess.choices = [quiz.option1, quiz.option2, quiz.option3, quiz.option4]
             return render_template("quiz1.html", logedin=find_login(request.cookies.get("login_token")), form=form, _class=_class, correct=False)
             
 
