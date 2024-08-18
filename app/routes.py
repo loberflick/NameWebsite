@@ -131,9 +131,13 @@ def view_class(id):
 
 class Question():
     option1 = ""
+    picture1 = ""
     option2 = ""
+    picture2 = ""
     option3 = ""
+    picture3 = ""
     option4 = ""
+    picture4 = ""
 
     anwser = ""
 
@@ -144,7 +148,7 @@ def new_quiz(id):
     students = []
     for student in _class.students:
         print(student.name)
-        students.append(students)
+        students.append(student)
     shuffle(students)
     if request.method == "GET":
         new_quiz = Question()
@@ -153,25 +157,32 @@ def new_quiz(id):
         new_quiz.option3 = students[2].name
         new_quiz.option4 = students[3].name
 
-        new_quiz.awnser = students[3].name
+        new_quiz.anwser = students[3].name
+
         current_quizzes.update({find_login(request.cookies.get("login_token")): new_quiz})
-        return redirect("quiz/1/" + str(id))
+        return redirect("/quiz/1/" + str(id))
 
 
 @app.route("/quiz/1/<int:id>", methods=["GET", "POST"])
 def quiz(id):
     form = Quiz()
     _class = models.Class.query.filter_by(id=id).first()
-
-    if _class.teacher == find_login(request.cookies.get("login_token")):
-        pass
-    else:
-        return render_template("restricted.html", _class=_class, logedin=find_login(request.cookies.get("login_token")))
-    for i in _class.students:
-        print(i.name)
     quiz = current_quizzes[find_login(request.cookies.get("login_token"))]
-    form.anwsers.choices = [quiz.option1, quiz.option2, quiz.option3, quiz.option4]
-    return render_template("quiz1.html", logedin=find_login(request.cookies.get("login_token")), form=form, _class=_class)
+    if request.method == "GET":
+        if _class.teacher == find_login(request.cookies.get("login_token")):
+            pass
+        else:
+            return render_template("restricted.html", _class=_class, logedin=find_login(request.cookies.get("login_token")))
+        for i in _class.students:
+            print(i.name)
+        form.guess.choices = [quiz.option1, quiz.option2, quiz.option3, quiz.option4]
+        return render_template("quiz1.html", logedin=find_login(request.cookies.get("login_token")), form=form, _class=_class, correct=False)
+    elif request.method == "POST":
+        if form.guess.data == quiz.anwser:
+            return render_template("quiz1.html", logedin=find_login(request.cookies.get("login_token")), form=form, _class=_class, correct=True)
+        else:
+            return render_template("quiz1.html", logedin=find_login(request.cookies.get("login_token")), form=form, _class=_class, correct=False)
+            
 
 
 def quick_template(page, form):

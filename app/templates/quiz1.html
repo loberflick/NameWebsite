@@ -1,6 +1,16 @@
 {% extends 'layout.html' %}
 {% block content %}
 
-{{form.anwsers}}
+<form action="/quiz/1/{{_class.id}}" method="get">
+    {{form.guess}}
+    <input type="submit">
+</form>
+
+{% if correct == True %}
+<a href = '/new_quiz/{{logedin}}'>
+    Next Question
+</a>
+{% endif %}
+
 
 {% endblock %}

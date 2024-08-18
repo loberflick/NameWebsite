@@ -20,5 +20,6 @@ class Add_Student(FlaskForm):
     picture = FileField('picture', validators=[DataRequired()])
     student_id = IntegerField('student id', validators=[DataRequired()])
 
+
 class Quiz(FlaskForm):
-    anwsers = RadioField('anwser1')
+    guess = RadioField('guess')
