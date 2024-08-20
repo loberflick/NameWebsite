@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import IntegerField, StringField, TextAreaField, SelectField, SelectMultipleField, FileField, RadioField
 from wtforms.validators import DataRequired, Optional, ValidationError
+from flask.ext.wtf.file import FileAllowed
 import app.models
 
 
@@ -12,7 +13,7 @@ class Add_Account(FlaskForm):
 class Add_Class(FlaskForm):
     name = StringField('name', validators=[DataRequired()])
     description = StringField('name', validators=[DataRequired()])
-    picture = FileField('picture', validators=[DataRequired()])
+    picture = FileField('picture', validators=[DataRequired(), FileAllowed(['png', 'jpg'])])
 
 
 class Add_Student(FlaskForm):

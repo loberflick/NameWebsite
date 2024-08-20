@@ -1,5 +1,6 @@
 from app import app
-from flask import render_template, abort, request, redirect, url_for, make_response 
+from flask import render_template, abort, request, redirect, url_for, make_response
+from werkzeug.utils import secure_filename
 from flask_sqlalchemy import SQLAlchemy
 import os
 from random import choices
@@ -10,6 +11,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 db = SQLAlchemy()
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, "classes.db")
 app.config['SECRET_KEY'] = 'supersecretkey'
+app.config["UPLOAD_FOLDER"] = '/static/images/'
 WTF_CSRF_ENABLED = True
 WTF_CSRF_SECRET_KEY = 'evenmoresecretkey'
 db.init_app(app)
@@ -96,6 +98,9 @@ def add_class():
     if request.method == "GET":
         return render_template("add_class.html", form=form, logedin=find_login(request.cookies.get("login_token")))
     elif request.method == "POST":
+        f = form.picture.data
+        f.save(os.path.join(app.config["UPLOAD_FOLDER"], secure_filename(f.filename)))
+
         new_class = models.Class()
         new_class.name = form.name.data
         new_class.image = form.picture.data

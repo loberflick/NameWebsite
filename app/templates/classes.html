@@ -1,8 +1,18 @@
 {% extends 'layout.html' %}
 {% block content %}
 
-{% for group in classes %}
-<a href="/class/{{group.id}}">{{group.name}}</br>
-{% endfor %}
+<div class="mainclasslist">
+    {% for group in classes %}
+    <a href="/class/{{group.id}}">
+    <div class="classitem">
+        <img src="{{url_for('static', filename='group.picture')}}">
+    <h1>
+        {{group.name}}
+    </h1>
+    </div>
+    </a>
+    </br>
+    {% endfor %}
+</div>
 
 {% endblock %}

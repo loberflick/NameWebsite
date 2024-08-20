@@ -1,24 +1,31 @@
 {% extends 'layout.html' %}
 {% block content %}
-<h1>Login</h1>
-<form action="/login" method="post">
-    {% if login == False %}
-    <P>Invail username or password</P>
-    {% endif %}
-    <label>Username:</label>
-    <p>{{ form.username }}</p>
-    <label>Password:</label>
-    <p>{{ form.password }}</p>
-    <input type="submit">
-</form>
-<br>
-<h1>Sign up</h1>
-<form action="/signup" method="post">
-    <label>Username:</label>
-    <p>{{ form.username }}</p>
-    <label>Password:</label>
-    <p>{{ form.password }}</p>
-    <input type="submit">
-</form>
+<div class="loginbox">
+    <div class="login">
+    <h1>Login</h1>
+    <form action="/login" method="post">
+        {% if login == False %}
+        <p>Invail username or password</p>
+        {% endif %}
+        <label>Username</label>
+        <p>{{ form.username }}</p>
+        <label>Password</label>
+        <p>{{ form.password }}</p>
+        <input type="submit">
+    </form>
+    </div>
+    <div class="seperator"></div><br>
 
+    <div class="signup">
+    <h1>Sign up</h1>
+    <form action="/signup" method="post">
+        <label>Username</label>
+        <p>{{ form.username }}</p>
+        <label>Password</label>
+        <p>{{ form.password }}</p>
+        <input type="submit">
+    </form>
+    </div>
+    
+</div>
 {% endblock %}
