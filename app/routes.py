@@ -141,9 +141,8 @@ class Question():
 
     anwser = ""
 
-    def rand_ans():
-        anwser = choices([quiz.option1, quiz.option2, quiz.option3, quiz.option4])
-
+    def rand_ans(self):
+        self.anwser = choices([self.option1, self.option2, self.option3, self.option4],k = 1)[0]
 @app.route("/new_quiz/<int:id>", methods=["GET", "POST"])
 def new_quiz(id):
     _class = models.Class.query.filter_by(id=id).first()
@@ -158,8 +157,7 @@ def new_quiz(id):
         new_quiz.option2 = students[1].name
         new_quiz.option3 = students[2].name
         new_quiz.option4 = students[3].name
-
-        new_quiz.anwser = students[3].name
+        new_quiz.rand_ans()
 
         current_quizzes.update({find_login(request.cookies.get("login_token")): new_quiz})
         return redirect("/quiz/1/" + str(id))
@@ -178,13 +176,14 @@ def quiz(id):
         for i in _class.students:
             print(i.name)
         form.guess.choices = [quiz.option1, quiz.option2, quiz.option3, quiz.option4]
-        return render_template("quiz1.html", logedin=find_login(request.cookies.get("login_token")), form=form, _class=_class, correct=False)
+        return render_template("quiz1.html", logedin=find_login(request.cookies.get("login_token")), form=form, _class=_class, correct=False, anwser=quiz.anwser)
     elif request.method == "POST":
+        print(quiz.anwser)
         if form.guess.data == quiz.anwser:
-            return render_template("quiz1.html", logedin=find_login(request.cookies.get("login_token")), form=form, _class=_class, correct=True)
+            return render_template("quiz1.html", logedin=find_login(request.cookies.get("login_token")), form=form, _class=_class, correct=True, anwser=quiz.anwser)
         else:
             form.guess.choices = [quiz.option1, quiz.option2, quiz.option3, quiz.option4]
-            return render_template("quiz1.html", logedin=find_login(request.cookies.get("login_token")), form=form, _class=_class, correct=False)
+            return render_template("quiz1.html", logedin=find_login(request.cookies.get("login_token")), form=form, _class=_class, correct=False, anwser=quiz.anwser)
             
 
 
