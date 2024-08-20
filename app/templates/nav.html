@@ -1,21 +1,24 @@
 <div id='sidebar' class='sidebar'>
-<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">
-x
-</a>
-
-<nav>
-    <a href="/">Home |</a>
-    {% if logedin == False %}
-    <a href="/login">Login |</a>
-    {% endif %}
-    {% if logedin != False %}
-    <a href="/classes">Classes |</a> 
-    <a href="/add_class">Add class</a> 
-    {% endif %}
-</nav>
+    <a href="javascript:void(0)" class="closebutton" onclick="closeNav()">
+        x
+    </a>
+    <nav id="navbar">
+        <a href="/">Home</a> </br>
+        {% if logedin == False %}
+        <a href="/login">Login</a> </br>
+        {% endif %}
+        {% if logedin != False %}
+        <a href="/classes">Classes</a> </br>
+        <a href="/add_class">Add class</a> </br>
+        {% endif %}
+    </nav>
 
 </div>
 
-<a href="javascript:void(0)" class="openbtn" onclick="openNav()">
-a
+<a href="javascript:void(0)" class="openbutton" onclick="openNav()">
+    <div class="menubutton">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+    </div>
 </a>

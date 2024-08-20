@@ -1,0 +1,115 @@
+body { 
+    background-color: #FCEFF9;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+h1 {
+    position: relative;
+    color: #233329;
+}
+
+
+.classbox {
+    padding-left: 10%;
+    left: 10%;
+}
+
+.classlist {
+    border: solid;
+    border-color: #63A46C;
+    border-width: 10px;
+    position: absolute;
+    width: 40%;
+    height: 40%;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+    display: flex;
+}
+
+.classitem {
+    width: 100%;
+    display: inline;
+    text-align: center;
+}
+
+.classitem img {
+    height: 350px;
+    width: 350px;
+    background-color: #233329;
+}
+
+.classitem h3{
+    position: relative;
+    bottom: 5%;
+    color: #233329;
+}
+
+
+nav {
+    opacity: 0;
+    transition: 0.25s;
+}
+
+/* Collasping side bar */
+.sidebar {
+    height: 100%;
+    width: 0%;
+    position: absolute; /* keep in same position */
+    background-color: #63A46C;
+    transition: 0.5s; /* Make changes to style over time */
+    z-index: 1;
+    /* Keep in top left */
+    top: 0;
+    left: 0;
+    text-wrap: nowrap;
+    overflow-x: hidden; /* hide anything flowing out of sidebar */
+}
+
+.sidebar a {
+    line-height: 50px;
+    position: relative;
+    width: 100%;
+    color: white;
+    font-size: xx-large;
+    text-decoration: none; /* get rid of underline on link */
+    margin: 25px;
+}
+
+
+.sidebar a:hover {
+    border-radius: 10px;
+    background-color: #63D471;
+}
+
+.sidebar .closebutton {
+    line-height: 40px;
+    position: absolute; /* keep in same position */
+    width: 40px;
+    height: 40px;
+    top: 0px;
+    right: 0px;
+    text-align: center;
+}
+
+.sidebar .closebutton:hover {
+    border-radius: 100%;
+    background-color: #63D471;
+
+}
+
+.menubutton {
+    width: 35px;
+    background-color: white;
+    border: solid;
+    border-radius: 5px;
+    border-color: #63A46C;
+    cursor: pointer;
+}
+
+.menubutton .bar {
+    width: 25px;
+    height: 5px;
+    background-color: #63A46C;
+    margin: 5px ;
+}

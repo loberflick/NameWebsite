@@ -28,7 +28,12 @@ from app.forms import Add_Account, Add_Class, Add_Student, Quiz
 # Home Route
 @app.route("/")
 def home():
-    return render_template("index.html", logedin=find_login(request.cookies.get("login_token")))
+    logedin=find_login(request.cookies.get("login_token"))
+    if logedin:
+        classes = models.Class.query.filter_by(teacher=logedin)
+        return render_template("index.html", logedin=logedin, classes=classes)
+    else:
+        return redirect("/login")
 
 
 # login to an account and store a cookie corresponding to the account

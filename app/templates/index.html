@@ -1,4 +1,22 @@
 {% extends 'layout.html' %}
 {% block content %}
 
+<div class="classbox">
+    <h1>
+        Classes
+    </h1>
+    <div class="classlist">
+        {% for group in classes %}
+        <div class="classitem">
+            <a href="class/{{group.id}}">
+                <img src="{{url_for('static', filename='group.picture')}}">
+            </a>
+            <h3>
+                {{group.name}}
+            </h3>
+        </div>
+        {% endfor %} 
+    </div>
+</div>
+
 {% endblock %}
