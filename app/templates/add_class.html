@@ -1,14 +1,15 @@
 {% extends 'layout.html' %}
 {% block content %}
-
-<form action="/add_class" method="post">
-    <label>Class name:</label>
-    <p>{{ form.name }}</p>
-    <label>Description:</label>
-    <p>{{ form.description}}</p>
-    <label>Image:</label>
-    <p>{{ form.picture }}</p>
-    <input type="submit">
+<div class="content">
+<form action="/add_class" method="post" enctype="multipart/form-data" class="addclass">
+    <label>Class name</label> <br>
+    {{ form.name }} <br>
+    <label>Description</label> <br>
+    {{ form.description}} <br>
+    <label>Image</label> <br>
+    {{ form.picture(**{'onchange':'loadFile(event)'}) }}<label></label> <br>
+    <img id="output"><br>
+    <input type="submit" class="submit">
 </form>
-
+</div>
 {% endblock %}

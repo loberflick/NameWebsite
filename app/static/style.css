@@ -1,6 +1,7 @@
 body { 
     background-color: #FCEFF9;
     font-family: Arial, Helvetica, sans-serif;
+    overflow-x: hidden;
 }
 
 h1 {
@@ -8,18 +9,73 @@ h1 {
     color: #233329;
 }
 
+label {
+    color: #233329;
+    font-size: x-large;
+}
+
+::-webkit-file-upload-button {
+    background-color: #233329;
+    color: white;
+}
+
+::-webkit-scrollbar {
+    width: 15px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: #233329;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #FCEFF9;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+.addclass {
+    text-align: center;
+    line-height: 50px;
+    height: 100%;
+}
+
+.addclass input{
+    height: 5%;
+    text-align: center;
+    border-radius: 15px;
+    background-color: #233329;
+    color: white;
+}
+
+.addclass img {
+    position: relative  ;
+    border-radius: 5px;
+    left: 42.5%;
+    width: 15%;
+    top: 5%;
+}
+
+.addclass .submit {
+    position: absolute;
+    width: 20%;
+    height: 10%;
+    left: 40%;
+    bottom: 5%;
+}
+
 .classbox {
     padding-left: 10%;
     left: 10%;
 }
 
-.mainclasslist {
+.content {
     position: absolute;
     width: 80%;
+    height: 100%;
     left: 10%;
 }
 
-.mainclasslist .classitem{
+.content .classitem{
     float: left;
     width: 100%;
     position: relative;
@@ -27,14 +83,14 @@ h1 {
     left: 100px;
 }
 
-.mainclasslist h1 {
+.content h1 {
     font-size: 50px;
     left: 5%;
     text-align: justify;
 
 }
 
-.mainclasslist img {
+.content img {
     border-radius: 25px;
     float: left;
     margin: auto;
@@ -60,9 +116,11 @@ h1 {
     text-align: center;
 }
 
+.classlist .classitem {
+    height: 100%;
+}
 .classitem img {
-    height: 350px;
-    width: 350px;
+    height: 80%;
     background-color: #233329;
 }
 
@@ -91,7 +149,7 @@ h1 {
     color: white;
 }
 
-.loginbox label{
+.loginbox label {
     color: white;
 }
 
@@ -107,6 +165,7 @@ h1 {
 
 .loginbox .login {
     position: absolute;
+    line-height: 4%;
     width: 100%;
     height: 40%;
     top: 5%;
@@ -116,6 +175,7 @@ h1 {
 .loginbox .signup {
     position: absolute;
     width: 100%;
+    line-height: 4%;
     height: 40%;
     top: 55%;
 

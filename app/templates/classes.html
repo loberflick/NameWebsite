@@ -1,11 +1,11 @@
 {% extends 'layout.html' %}
 {% block content %}
 
-<div class="mainclasslist">
+<div class="content">
     {% for group in classes %}
     <a href="/class/{{group.id}}">
     <div class="classitem">
-        <img src="{{url_for('static', filename='group.picture')}}">
+        <img src="{{url_for('static', filename=group.picture)}}">
     <h1>
         {{group.name}}
     </h1>

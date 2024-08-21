@@ -11,7 +11,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 db = SQLAlchemy()
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, "classes.db")
 app.config['SECRET_KEY'] = 'supersecretkey'
-app.config["UPLOAD_FOLDER"] = '/static/images/'
+app.config["UPLOAD_FOLDER"] = 'static/images'
 WTF_CSRF_ENABLED = True
 WTF_CSRF_SECRET_KEY = 'evenmoresecretkey'
 db.init_app(app)
@@ -99,11 +99,13 @@ def add_class():
         return render_template("add_class.html", form=form, logedin=find_login(request.cookies.get("login_token")))
     elif request.method == "POST":
         f = form.picture.data
-        f.save(os.path.join(app.config["UPLOAD_FOLDER"], secure_filename(f.filename)))
+        basedir = os.path.abspath(os.path.dirname(__file__))
+        filepath = os.path.join(basedir, app.config["UPLOAD_FOLDER"], secure_filename(f.filename))
+        f.save(filepath)
 
         new_class = models.Class()
         new_class.name = form.name.data
-        new_class.image = form.picture.data
+        new_class.picture = "images/" + f.filename
         new_class.teacher = find_login(request.cookies.get("login_token"))
         db.session.add(new_class)
         db.session.commit()
