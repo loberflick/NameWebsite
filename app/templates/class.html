@@ -11,9 +11,14 @@
 {{i.name}}
 {% endfor %}
 <br>
+{% if _class.students|length >= 4 %}
 <a href="/new_quiz/{{id}}">
     start quiz
 </a>
+{% else %}
+add more students to do quiz
+{% endif %}
+
 
 <h2>
     Add Student
@@ -26,7 +31,8 @@
         {{form.name(placeholder='Student name')}}<br>
         Students ID<br>
         {{form.student_id(placeholder='Student ID')}}<br>
-        {{form.picture}}<br>
+        {{ form.picture(**{'onchange':'loadFile(event)'}) }}<label></label> <br>
+        <img id="output"><br>
         <input type="submit">
     </form>
 </p1>

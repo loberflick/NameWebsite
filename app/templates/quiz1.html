@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
 {% block content %}
-
+<div class="content">
 <form action="/quiz/1/{{_class.id}}" method="post">
     {{form.guess}}
     <input type="submit">
@@ -12,6 +12,5 @@
     Next Question
 </a>
 {% endif %}
-
-
+</div>
 {% endblock %}
