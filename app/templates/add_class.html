@@ -7,7 +7,10 @@
     <label>Description</label> <br>
     {{ form.description}} <br>
     <label>Image</label> <br>
-    {{ form.picture(**{'onchange':'loadFile(event)'}) }}<label></label> <br>
+    {% if validfile == False %}
+    Please select valid file type
+    {% endif %}
+    {{ form.picture(**{'onchange':'loadFile(event)', 'accept': '.png,.jpg'}) }}<label></label> <br>
     <img id="output"><br>
     <input type="submit" class="submit">
 </form>

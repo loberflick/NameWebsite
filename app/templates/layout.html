@@ -4,6 +4,7 @@
     <head>
         <title>Name Website</title>
         <link rel="stylesheet" href='{{ url_for("static", filename="style.css")}}'>
+        <script src='{{ url_for("static", filename="js/script.js")}}'></script>
     </head>
 
     <body>
@@ -12,7 +13,6 @@
         {% endblock %}
         {% include 'footer.html' %}
 
-        <script src='{{ url_for("static", filename="js/script.js")}}'></script>
     </body>
 
 </html>
