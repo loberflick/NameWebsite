@@ -33,10 +33,61 @@ label {
     border-bottom-right-radius: 20px;
 }
 
-.classtitle {
-    background-color: black;
+.studentlist {
+    position: absolute;
+    top: 50%;
     width: 40%;
     height: 40%;
+    border: solid;
+    overflow-y: auto;
+    border-color: #233329;
+    border-radius: 20px;
+}
+
+.studentlist .student {
+    height: 20px;
+    margin-top: 5%;
+    height: 30%;
+    position: relative;
+}
+
+.studentlist .student h1 {
+    font-size: x-large;    
+}
+.studentlist .student h2 {
+    position: relative;
+    font-size: large;
+    color: #233329;
+    left: 5%; 
+}
+
+.studentlist .student img{
+    height: 100%;
+}
+
+.classtitle {
+    width: 60%;
+    height: 40%;
+}
+
+.content ::-webkit-scrollbar-track {
+    
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+.classtitle p{
+    position: relative;
+    left: 5%;
+    width: 50%;
+    height: 50%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.classtitle img {
+    height: 80%;
+    top: 10;
 }
 
 .addclass {

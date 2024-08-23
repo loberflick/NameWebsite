@@ -12,10 +12,21 @@
     </div>
 
     <br>
-
+    <div class="studentlist">
     {% for i in _class.students %}
-        {{i.name}}
+        <div class="student">
+            <img src="{{url_for('static', filename=i.picture)}}">
+            <h1>
+                {{i.name}}
+            </h1>
+            <h2>
+                {{i.student_id}}
+            </h2>
+        </div>
     {% endfor %}<br>
+    </div>
+        
+
     {% if _class.students|length >= 4 %}
         <a href="/new_quiz/{{id}}">
             start quiz
@@ -23,7 +34,7 @@
     {% else %}
         add more students to do quiz
     {% endif %}
-
+ <!--
 
     <h2>
         Add Student
@@ -40,7 +51,7 @@
             <img id="output"><br>
             <input type="submit">
         </form>
-    </p1>
+   </p1>-->
 
 </div>
 {% endblock %}
