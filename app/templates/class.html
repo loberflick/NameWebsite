@@ -28,8 +28,10 @@
         
 
     {% if _class.students|length >= 4 %}
-        <a href="/new_quiz/{{id}}">
-            start quiz
+        <a href="/new_quiz/{{id}}" class="startquiz">
+            <h3>
+                START QUIZ
+            </h3>
         </a>
     {% else %}
         add more students to do quiz

@@ -184,15 +184,17 @@ def quiz(id):
     form = Quiz()
     _class = models.Class.query.filter_by(id=id).first()
     quiz = current_quizzes[find_login(request.cookies.get("login_token"))]
+    form.guess.choices = [quiz.option1, quiz.option2, quiz.option3, quiz.option4]
+    picture = ""
+    for i in _class.students:
+        if i.name == quiz.anwser:
+            picture = i.picture
     if request.method == "GET":
         if _class.teacher == find_login(request.cookies.get("login_token")):
             pass
         else:
             return render_template("restricted.html", _class=_class, logedin=find_login(request.cookies.get("login_token")))
-        for i in _class.students:
-            print(i.name)
-        form.guess.choices = [quiz.option1, quiz.option2, quiz.option3, quiz.option4]
-        return render_template("quiz1.html", logedin=find_login(request.cookies.get("login_token")), form=form, _class=_class, correct=False, anwser=quiz.anwser)
+        return render_template("quiz1.html", logedin=find_login(request.cookies.get("login_token")), form=form, _class=_class, correct=False, anwser=quiz.anwser, picture=picture)
     elif request.method == "POST":
         print(quiz.anwser)
         if form.guess.data == quiz.anwser:
