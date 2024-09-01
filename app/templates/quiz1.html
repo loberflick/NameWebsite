@@ -1,11 +1,11 @@
 {% extends 'layout.html' %}
 {% block content %}
 <div class="content">
-
-{{}}
+<div class="quiz">
+<img src="{{url_for('static', filename=picture)}}">    
 <form action="/quiz/1/{{_class.id}}" method="post">
-    {{form.guess}}
-    <input type="submit">
+    {{form.guess(class='options')}}
+    <input type="submit"  class="startquiz">
 </form>
 {{anwser}}
 
@@ -14,5 +14,6 @@
     Next Question
 </a>
 {% endif %}
+</div>
 </div>
 {% endblock %}

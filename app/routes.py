@@ -196,12 +196,11 @@ def quiz(id):
             return render_template("restricted.html", _class=_class, logedin=find_login(request.cookies.get("login_token")))
         return render_template("quiz1.html", logedin=find_login(request.cookies.get("login_token")), form=form, _class=_class, correct=False, anwser=quiz.anwser, picture=picture)
     elif request.method == "POST":
-        print(quiz.anwser)
         if form.guess.data == quiz.anwser:
-            return render_template("quiz1.html", logedin=find_login(request.cookies.get("login_token")), form=form, _class=_class, correct=True, anwser=quiz.anwser)
+            return render_template("quiz1.html", logedin=find_login(request.cookies.get("login_token")), form=form, _class=_class, correct=True, anwser=quiz.anwser, picture=picture)
         else:
             form.guess.choices = [quiz.option1, quiz.option2, quiz.option3, quiz.option4]
-            return render_template("quiz1.html", logedin=find_login(request.cookies.get("login_token")), form=form, _class=_class, correct=False, anwser=quiz.anwser)
+            return render_template("quiz1.html", logedin=find_login(request.cookies.get("login_token")), form=form, _class=_class, correct=False, anwser=quiz.anwser, picture=picture)
             
 
 

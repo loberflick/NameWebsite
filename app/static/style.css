@@ -62,6 +62,35 @@ label {
     text-wrap: nowrap;
 }
 
+.quiz img{
+    position: absolute;
+    width: 30%;
+    left: 35%;
+}
+
+.options{
+    position: absolute;
+    top: 50%;
+    left: 20%;
+    width: 60%;
+    height: 40%;
+    border: solid;
+    border-color: #233329;
+    border-radius: 10px;
+}
+
+.options label{
+    position: relative;
+    font-size: x-large;
+    background-color: #233329;
+}
+
+.quiz .startquiz{
+    position: absolute;
+    left: 45%;
+    top: 85%;
+}
+
 .studentlist {
     position: absolute;
     top: 50%;
