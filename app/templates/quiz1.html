@@ -4,7 +4,15 @@
 <div class="quiz">
 <img src="{{url_for('static', filename=picture)}}">    
 <form action="/quiz/1/{{_class.id}}" method="post">
-    {{form.guess(class='options')}}
+    <div class="options">
+
+    {% for option in form.guess%}
+    <div class="option">
+        {{option}}
+        {{option.label}}
+    </div>
+    {% endfor %}
+    </div>
     <input type="submit"  class="startquiz">
 </form>
 {{anwser}}
