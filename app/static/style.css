@@ -93,6 +93,11 @@ label {
     border-color:#ffffff;
 }
 
+.option:hover{
+    background-color: #63A46C;
+}
+
+
 .option input{
     visibility: visible;
     position: relative;
@@ -106,11 +111,11 @@ label {
 .option label {
     display: block;
     position: relative;
-    top: -50%;
+    top: -62.5%;
     left: 0%;
     width: 100%;
     text-align: center;
-    color: #ebdee8;
+    color: white;
 }
 
 .quiz .startquiz{
