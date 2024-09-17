@@ -28,32 +28,36 @@
         
 
     {% if _class.students|length >= 4 %}
-        <a href="/new_quiz/{{id}}" class="startquiz">
+        <a href="/new_quiz/{{id}}/1/0" class="startquiz">
             <h3>
-                START QUIZ
+                NEW QUIZ
             </h3>
         </a>
+        {% if quiz_exist == True%}
+        <a href="/quiz/1/{{_class.id}}" class="startquiz continuequiz">
+            <h3>
+                CONTINUE QUIZ
+            </h3>
+        </a>
+        {% endif %}
     {% else %}
         add more students to do quiz
     {% endif %}
- <!--
 
-    <h2>
-        Add Student
-    </h2>
 
-    <p1>
-        <form action="/class/{{id}}"  method="post">
+    <form action="/class/{{id}}"  method="post" enctype="multipart/form-data" class="addstudent">
+        <h1>Add Student</h1>
+        <div class="studentform">
             Students Name<br>
-        
             {{form.name(placeholder='Student name')}}<br>
             Students ID<br>
             {{form.student_id(placeholder='Student ID')}}<br>
-            {{ form.picture(**{'onchange':'loadFile(event)'}) }}<label></label> <br>
+            {{ form.picture(**{'onchange':'loadFile(event)', 'class':'studentimage'}) }}<br>
             <img id="output"><br>
             <input type="submit">
-        </form>
-   </p1>-->
+
+        </div>
+    </form>
 
 </div>
 {% endblock %}

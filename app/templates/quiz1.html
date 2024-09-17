@@ -5,23 +5,52 @@
 <img src="{{url_for('static', filename=picture)}}">    
 <form action="/quiz/1/{{_class.id}}" method="post">
     <div class="options">
+    {% if answered == True %}
+        {% if correct == True %}
+            <div class = "correct">
+                Correct!    
+            </div>
+        {% else %}
+            <div class = "correct">
+                Wrong
+                <p>
+                    Correct answer was {{quiz.answer}} 
+                </p>   
+            </div>
+        {% endif %}
 
-    {% for option in form.guess%}
-    <div class="option">
-        {{option}}
-        {{option.label}}
-    </div>
-    {% endfor %}
-    </div>
-    <input type="submit"  class="startquiz">
+
+        {% if quiz.question_num == 10 %}
+            <div class="numcorrect">
+                {{quiz.correct}}/{{quiz.question_num}}
+            </div>
+            <a href = '/class/{{_class.id}}' >
+                <div class="nextquestion">
+                    <p>
+                        Return to class
+                    </p>
+                </div>
+            </a>
+        {% else %}
+            <a href = '/new_quiz/{{_class.id}}/0/{% if correct == True %}1{% else %}0{% endif %}' >
+                <div class="nextquestion">
+                    <p>
+                        Next Question
+                    </p>
+                </div>
+            </a>
+        {% endif %}
+    {% else %}
+        {% for option in form.guess%}
+            <div class="option">
+                {{option(**{'onclick':"changeAnswer()", "id": "select" + '{0:d}'.format(loop.index)}) }}
+                {{option.label}}
+            </div>
+        {% endfor %}
+        </div>
+        <input type="submit"  class="startquiz">
+    {% endif %}
 </form>
-{{anwser}}
-
-{% if correct == True %}
-<a href = '/new_quiz/{{_class.id}}'>
-    Next Question
-</a>
-{% endif %}
 </div>
 </div>
 {% endblock %}

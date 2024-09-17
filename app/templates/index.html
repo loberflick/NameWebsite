@@ -6,17 +6,27 @@
         Classes
     </h1>
     <div class="classlist">
-        {% for group in classes %}
-        <div class="classitem">
-            <a href="class/{{group.id}}">
-                <img src="{{url_for('static', filename=group.picture)}}">
-            </a>
-            <h3>
-                {{group.name}}
-            </h3>
-        </div>
-        </br>
-        {% endfor %} 
+        {% if classes_length == 0 %}
+            <h1>
+                You dont have any classes.<br>
+            </h1>
+            <h2>
+                Create one here
+            </h2>
+            <a href="/add_class" class="startquiz">Add class</a></br>
+        {% else %}
+            {% for group in classes %}
+            <div class="classitem">
+                <a href="class/{{group.id}}">
+                    <img src="{{url_for('static', filename=group.picture)}}">
+                </a>
+                <h3>
+                    {{group.name}}
+                </h3>
+            </div>
+            </br>
+            {% endfor %} 
+        {% endif %}
     </div>
 </div>
 

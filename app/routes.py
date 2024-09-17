@@ -23,6 +23,22 @@ token_length = 16
 current_quizzes = {}
 
 
+class Question():
+    question_num = 0
+    correct = 0
+
+    option1 = ""
+    picture1 = ""
+    option2 = ""
+    option3 = ""
+    option4 = ""
+
+    answer = ""
+
+    def rand_ans(self):
+        self.answer = choices([self.option1, self.option2, self.option3, self.option4], k=1)[0]
+
+
 import app.models as models
 from app.forms import Add_Account, Add_Class, Add_Student, Quiz
 
@@ -30,10 +46,13 @@ from app.forms import Add_Account, Add_Class, Add_Student, Quiz
 # Home Route
 @app.route("/")
 def home():
-    logedin=find_login(request.cookies.get("login_token"))
-    if logedin:
-        classes = models.Class.query.filter_by(teacher=logedin)
-        return render_template("index.html", logedin=logedin, classes=classes)
+    user = find_login(request.cookies.get("login_token"))
+    if user:
+        classes = models.Class.query.filter_by(teacher=user)
+        classes_length = 0 
+        for i in classes:
+            classes_length += 1
+        return render_template("index.html", logedin=user, classes=classes, classes_length=classes_length)
     else:
         return redirect("/login")
 
@@ -41,38 +60,56 @@ def home():
 # login to an account and store a cookie corresponding to the account
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    print(request.cookies)
+    user = find_login(request.cookies.get("login_token"))
     form = Add_Account()
     if request.method == "GET":
-        return render_template("login.html", form=form, login=True, logedin=find_login(request.cookies.get("login_token")))
+        return render_template("login.html", form=form, login=True, logedin=user, accexist=False)
     else:
         password = form.password.data
         accounts = models.Account.query.filter_by(username=form.username.data).first()
+        if accounts is None:
+            return render_template("login.html", form=form, login=False, accexist=False)
         if str(password) == str(accounts.password):
-            gen_token = generate_token()
-            resp = make_response(redirect("/"))
-            resp.set_cookie("login_token", gen_token)
-            login_sessions.update({gen_token: accounts.id})
-            return resp
+            return sign_in(accounts)
         else:
-            return render_template("login.html", form=form, login=False)
+            return render_template("login.html", form=form, login=False, accexist=False)
 
 
 # Add a new account too the database
 @app.route("/signup", methods=["GET", "POST"])
 def sign_up():
-    print(request.method)
     form = Add_Account()
     if request.method == "GET":
-        return render_template("login.html", form=form, login=True)
+        return render_template("login.html", form=form, login=True, accexist=False)
     else:
-        new_account = models.Account()
-        new_account.username = form.username.data
-        new_account.password = form.password.data
-        db.session.add(new_account)
-        db.session.commit()
-        return redirect("/")
+        if models.Account.query.filter_by(username=form.username.data).first() == None:
+            # Create Account
+            new_account = models.Account()
+            new_account.username = form.username.data
+            new_account.password = form.password.data
+            db.session.add(new_account)
+            db.session.commit()
+            #Login
+            return sign_in(new_account)
+        else:
+            return render_template("login.html", form=form, login=True, accexist=True)
 
+def sign_in(account):
+    gen_token = generate_token()
+    resp = make_response(redirect("/"))
+    resp.set_cookie("login_token", gen_token)
+    login_sessions.update({gen_token: account.id})
+    return resp
+
+@app.route("/logout")
+def logout():
+    cookie = request.cookies.get("login_token")
+    user = find_login(cookie)
+    if user is None:
+        return render_template("restricted.html", logedin=user)
+    else:
+        login_sessions.pop(cookie)
+        return redirect("/")
 
 # Generate a unique token and return it
 def generate_token():
@@ -83,99 +120,114 @@ def generate_token():
 
 
 def find_login(token):
-    print(login_sessions)
     id = login_sessions.get(token)
-    print(id, token)
     if id is None:
         return False
     else:
         return id
 
 
-@app.route("/add_class", methods=["GET","POST"])
+@app.route("/add_class", methods=["GET", "POST"])
 def add_class():
     form = Add_Class()
+    user = find_login(request.cookies.get("login_token"))
+    if user is None:
+        return redirect("/login")
     if request.method == "GET":
-        return render_template("add_class.html", form=form, logedin=find_login(request.cookies.get("login_token")), valid_file=True)
+        return render_template("add_class.html", form=form, logedin=user, valid_file=True)
     elif request.method == "POST":
         f = form.picture.data
         filename, fileextension = os.path.splitext(f.filename)
         if fileextension == ".png" or fileextension == ".jpg":
             basedir = os.path.abspath(os.path.dirname(__file__))
-            filepath = os.path.join(basedir, app.config["UPLOAD_FOLDER"] + '/class', secure_filename(f.filename))
+            filepath = os.path.join(basedir, app.config["UPLOAD_FOLDER"] + '/class', secure_filename(str(user) + form.name.data + f.filename))
             f.save(filepath)
 
             new_class = models.Class()
             new_class.name = form.name.data
-            new_class.picture = "images/" + f.filename
-            new_class.teacher = find_login(request.cookies.get("login_token"))
+            new_class.picture = "images/class/" + str(user) + form.name.data + f.filename
+            new_class.teacher = user
             db.session.add(new_class)
             db.session.commit()
             return redirect("/")
         else:
-            return render_template("add_class.html", form=form, logedin=find_login(request.cookies.get("login_token")), valid_file=False)
-    return render_template("add_class.html", form=form, logedin=find_login(request.cookies.get("login_token")), valid_file=True)
+            return render_template("add_class.html", form=form, logedin=user, valid_file=False)
+    return render_template("add_class.html", form=form, logedin=user, valid_file=True)
 
 
 @app.route('/classes')
 def classes():
-    id = find_login(request.cookies.get("login_token"))
-    classes = models.Class.query.filter_by(teacher=id)
-    return render_template('classes.html', logedin=find_login(request.cookies.get("login_token")), classes=classes)
+    user = find_login(request.cookies.get("login_token"))
+    classes = models.Class.query.filter_by(teacher=user)
+    return render_template('classes.html', logedin=user, classes=classes)
 
 
 @app.route("/class/<int:id>", methods=["GET", "POST"])
 def view_class(id):
     form = Add_Student()
     _class = models.Class.query.filter_by(id=id).first()
+    user = find_login(request.cookies.get("login_token"))
+    quiz = current_quizzes.get(user)
+    quiz_exist = False if quiz is None else True
+    if quiz_exist and quiz.question_num >= 10:
+        current_quizzes.pop(user)
+        quiz_exist = False
+    if _class is None:
+            return render_template("restricted.html", logedin=user)
     if request.method == "GET":
-        if _class.teacher == find_login(request.cookies.get("login_token")):
-            pass
-        else:
-            return render_template("restricted.html", _class=_class,logedin=find_login(request.cookies.get("login_token")))
+        if _class.teacher != user:
+            return render_template("restricted.html", logedin=user)
     elif request.method == "POST":
-        print("new studetn")
-        new_student = models.Student()
-        new_student.name = form.name.data
-        new_student.picture = form.picture.data
-        new_student.student_id = form.student_id.data
-        new_student.classes.append(_class)
-        db.session.add(new_student)
-        db.session.commit()
-    return render_template("class.html", logedin=find_login(request.cookies.get("login_token")), _class=_class, form=form, id=id)
+        student = models.Student.query.filter_by(student_id=form.student_id.data).first()
+        if  student is None:
+            f = form.picture.data
+            filename, fileextension = os.path.splitext(f.filename)
+            if fileextension == ".png" or fileextension == ".jpg":
+                basedir = os.path.abspath(os.path.dirname(__file__))
+                filepath = os.path.join(basedir, app.config["UPLOAD_FOLDER"] + '/student', secure_filename(str(user) + _class.name + str(form.student_id.data) + fileextension))
+                f.save(filepath)
+                new_student = models.Student()
+                new_student.name = form.name.data
+                new_student.picture = "images/student/" + str(user) + _class.name + str(form.student_id.data) + fileextension
+                new_student.student_id = form.student_id.data
+                new_student.classes.append(_class)
+                db.session.add(new_student)
+                db.session.commit()
+        else:
+            student.classes.append(_class)
+            db.session.commit()
 
 
-class Question():
-    option1 = ""
-    picture1 = ""
-    option2 = ""
-    picture2 = ""
-    option3 = ""
-    picture3 = ""
-    option4 = ""
-    picture4 = ""
 
-    anwser = ""
+    return render_template("class.html", logedin=user, _class=_class, form=form, id=id, quiz_exist=quiz_exist)
 
-    def rand_ans(self):
-        self.anwser = choices([self.option1, self.option2, self.option3, self.option4],k = 1)[0]
-@app.route("/new_quiz/<int:id>", methods=["GET", "POST"])
-def new_quiz(id):
+
+@app.route("/new_quiz/<int:id>/<int:new>/<int:correct>", methods=["GET", "POST"])
+def new_quiz(id, new, correct):
     _class = models.Class.query.filter_by(id=id).first()
     students = []
+    user = find_login(request.cookies.get("login_token"))
+    if user is None:
+        return redirect("/login")
     for student in _class.students:
-        print(student.name)
         students.append(student)
     shuffle(students)
     if request.method == "GET":
-        new_quiz = Question()
+        quiz_exist = current_quizzes.get(user)
+        if new == 1:
+            new_quiz = Question()
+        else:
+            new_quiz = quiz_exist
+            if correct == 1:
+                new_quiz.correct += 1
+            new_quiz.question_num += 1
         new_quiz.option1 = students[0].name
         new_quiz.option2 = students[1].name
         new_quiz.option3 = students[2].name
         new_quiz.option4 = students[3].name
         new_quiz.rand_ans()
 
-        current_quizzes.update({find_login(request.cookies.get("login_token")): new_quiz})
+        current_quizzes.update({user: new_quiz})
         return redirect("/quiz/1/" + str(id))
 
 
@@ -183,46 +235,28 @@ def new_quiz(id):
 def quiz(id):
     form = Quiz()
     _class = models.Class.query.filter_by(id=id).first()
-    quiz = current_quizzes[find_login(request.cookies.get("login_token"))]
+    user = find_login(request.cookies.get("login_token"))
+    if user is None:
+        return redirect("/login")
+    quiz = current_quizzes[user]
     form.guess.choices = [quiz.option1, quiz.option2, quiz.option3, quiz.option4]
     picture = ""
     for i in _class.students:
-        if i.name == quiz.anwser:
+        if i.name == quiz.answer:
             picture = i.picture
     if request.method == "GET":
-        if _class.teacher == find_login(request.cookies.get("login_token")):
+        if _class.teacher == user:
             pass
         else:
-            return render_template("restricted.html", _class=_class, logedin=find_login(request.cookies.get("login_token")))
-        return render_template("quiz1.html", logedin=find_login(request.cookies.get("login_token")), form=form, _class=_class, correct=False, anwser=quiz.anwser, picture=picture)
+            return render_template("restricted.html", logedin=user)
+        return render_template("quiz1.html", logedin=user, form=form, _class=_class, correct=False, quiz=quiz, picture=picture, answered=False)
     elif request.method == "POST":
-        if form.guess.data == quiz.anwser:
-            return render_template("quiz1.html", logedin=find_login(request.cookies.get("login_token")), form=form, _class=_class, correct=True, anwser=quiz.anwser, picture=picture)
+        if form.guess.data == quiz.answer:
+            return render_template("quiz1.html", logedin=user, form=form, _class=_class, correct=True, quiz=quiz, picture=picture, answered=True)
         else:
-            form.guess.choices = [quiz.option1, quiz.option2, quiz.option3, quiz.option4]
-            return render_template("quiz1.html", logedin=find_login(request.cookies.get("login_token")), form=form, _class=_class, correct=False, anwser=quiz.anwser, picture=picture)
-            
+            return render_template("quiz1.html", logedin=user, form=form, _class=_class, correct=False, quiz=quiz, picture=picture, answered=True)
 
-
-def quick_template(page, form):
-    return render_template(page, form, logedin=find_login(request.cookies.get("login_token")))
-
-
-# @app.route('/add_pizza', methods = ["GET", "POST"])
-# def add_pizza():
-#    form = Add_Pizza()
-#    if request.method == "GET":
-#        new_pizza = models.Base()
-#        form.base.choices = models.Base.query.all()
-#        return render_template("add_pizza.html", form=form)
-#    else:
-#        if form.validate_on_submit():
-#            new_pizza = models.Pizza()
-#            new_pizza.name = form.name.data
-#            new_pizza.description = form.description.data
-#            new_pizza.base = form.base.data
-#            db.session.add(new_pizza)
-#            db.session.commit
-#            return redirect(url_for('pizza', id=new_pizza.id))
-#        else:
-#            return render_template("add_pizza.html", form=form)
+@app.errorhandler(404)
+def page_not_found(i):
+    user = find_login(request.cookies.get("login_token"))
+    return render_template("404.html", logedin=user), 404

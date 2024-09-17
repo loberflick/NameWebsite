@@ -5,7 +5,7 @@
     <h1>Login</h1>
     <form action="/login" method="post">
         {% if login == False %}
-        <p>Invail username or password</p>
+        <p>Invalid username or password</p>
         {% endif %}
         <label>Username</label>
         <p>{{ form.username }}</p>
@@ -19,6 +19,9 @@
     <div class="signup">
     <h1>Sign up</h1>
     <form action="/signup" method="post">
+        {% if accexist == True %}
+        <p>Invalid username, already exists</p>
+        {% endif %}
         <label>Username</label>
         <p>{{ form.username }}</p>
         <label>Password</label>
