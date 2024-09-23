@@ -44,6 +44,14 @@ import app.models as models
 from app.forms import Add_Account, Add_Class, Add_Student, Quiz
 
 
+def check_overflow(num):
+    if num > overflow_lim:
+        return True
+    else:
+        return False
+
+
+
 # Home Route
 @app.route("/")
 def home():
@@ -170,49 +178,53 @@ def classes():
 @app.route("/class/<int:id>", methods=["GET", "POST"])
 def view_class(id):
     user = find_login(request.cookies.get("login_token"))
-    #if id > overflow_lim:
-    #    return render_template("restricted.html", logedin=user)
+    if check_overflow(id):
+        return render_template("restricted.html", logedin=user)
     form = Add_Student()
-    _class = models.Class.query.filter_by(id=id).first()
     quiz = current_quizzes.get(user)
     quiz_exist = False if quiz is None else True
-    
-    if quiz_exist and quiz.question_num >= 10:
-        current_quizzes.pop(user)
-        quiz_exist = False
-    if _class is None:
-        return render_template("restricted.html", logedin=user)
+    message = ""
+    _class = models.Class.query.filter_by(id=id).first()
     if request.method == "GET":
-        if _class.teacher != user:
+        if _class is None or _class.teacher != user:
             return render_template("restricted.html", logedin=user)
+        elif quiz_exist and quiz.question_num >= 10:
+            current_quizzes.pop(user)
+            quiz_exist = False
     elif request.method == "POST":
-        student = models.Student.query.filter_by(student_id=form.student_id.data).first()
-        if student is None:
-            f = form.picture.data
-            filename, fileextension = os.path.splitext(f.filename)
-            if fileextension == ".png" or fileextension == ".jpg":
-                basedir = os.path.abspath(os.path.dirname(__file__))
-                filepath = os.path.join(basedir, app.config["UPLOAD_FOLDER"] + '/student', secure_filename(str(user) + _class.name + str(form.student_id.data) + fileextension))
-                f.save(filepath)
-                new_student = models.Student()
-                new_student.name = form.name.data
-                new_student.picture = "images/student/" + str(user) + _class.name + str(form.student_id.data) + fileextension
-                new_student.student_id = form.student_id.data
-                new_student.classes.append(_class)
-                db.session.add(new_student)
-                db.session.commit()
+        if check_overflow(form.student_id.data):
+            message += "Enter a lower student id "
         else:
-            student.classes.append(_class)
-            db.session.commit()
-    return render_template("class.html", logedin=user, _class=_class, form=form, id=id, quiz_exist=quiz_exist)
+            student = models.Student.query.filter_by(student_id=form.student_id.data).first()
+            if student is None:
+                f = form.picture.data
+                filename, fileextension = os.path.splitext(f.filename)
+                print(fileextension)
+                if fileextension == ".png" or fileextension == ".jpg":
+                    basedir = os.path.abspath(os.path.dirname(__file__))
+                    filepath = os.path.join(basedir, app.config["UPLOAD_FOLDER"] + '/student', secure_filename(str(user) + _class.name + str(form.student_id.data) + fileextension))
+                    f.save(filepath)
+                    new_student = models.Student()
+                    new_student.name = form.name.data
+                    new_student.picture = "images/student/" + str(user) + _class.name + str(form.student_id.data) + fileextension
+                    new_student.student_id = form.student_id.data
+                    new_student.classes.append(_class)
+                    db.session.add(new_student)
+                    db.session.commit()
+                else:
+                    message += "Please use a valid file type "
+            else:
+                student.classes.append(_class)
+                db.session.commit()
+    return render_template("class.html", message=message, logedin=user, _class=_class, form=form, id=id, quiz_exist=quiz_exist)
 
 
 @app.route("/new_quiz/<int:id>/<int:new>/<int:correct>", methods=["GET", "POST"])
 def new_quiz(id, new, correct):
     user = find_login(request.cookies.get("login_token"))
-    if id > overflow_lim:
+    if check_overflow(id):
         return render_template("overflow.html", logedin=user)
-    if user is None:
+    elif user is None:
         return redirect("/login")
     _class = models.Class.query.filter_by(id=id).first()
     students = []
@@ -243,7 +255,7 @@ def quiz(id):
     user = find_login(request.cookies.get("login_token"))
     if user is None:
         return redirect("/login")
-    if id > overflow_lim:
+    if check_overflow(id):
         return render_template("overflow.html", logedin=user)
     form = Quiz()
     _class = models.Class.query.filter_by(id=id).first()

@@ -48,6 +48,9 @@
     <form action="/class/{{id}}"  method="post" enctype="multipart/form-data" class="addstudent">
         <h1>Add Student</h1>
         <div class="studentform">
+            <div class="error">
+                {{message}}<br>
+            </div>
             Students Name<br>
             {{form.name(placeholder='Student name')}}<br>
             Students ID<br>
