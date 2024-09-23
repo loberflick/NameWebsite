@@ -11,7 +11,7 @@ class Add_Account(FlaskForm):
 
 class Add_Class(FlaskForm):
     name = StringField('name', validators=[DataRequired()])
-    description = StringField('name', validators=[DataRequired()])
+    description = TextAreaField('name', validators=[DataRequired()])
     picture = FileField('picture', validators=[DataRequired()])
 
 
@@ -22,4 +22,4 @@ class Add_Student(FlaskForm):
 
 
 class Quiz(FlaskForm):
-    guess = RadioField('guess')
+    guess = RadioField('guess', validators=[DataRequired()])

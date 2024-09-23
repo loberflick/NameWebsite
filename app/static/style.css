@@ -260,7 +260,12 @@ label {
 
 .addclass input{
     height: 5%;
-    text-align: center;
+    border-radius: 15px;
+    background-color: #233329;
+    color: white;
+}
+
+.addclass textarea{
     border-radius: 15px;
     background-color: #233329;
     color: white;
@@ -280,6 +285,13 @@ label {
     height: 10%;
     left: 40%;
     bottom: 5%;
+}
+
+.description {
+    position: relative;
+    height: 30%;
+    width: 40%;
+    background-color: #233329;
 }
 
 .classbox {
@@ -412,7 +424,6 @@ label {
     top: 60%;
 
 }
-
 
 nav {
     opacity: 0;

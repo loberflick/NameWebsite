@@ -10,7 +10,6 @@ class Account(db.Model):
 
     username = db.Column(db.Text())
     password = db.Column(db.Text())
-    token = db.Column(db.Text())
 
     def __repr__(self):
         return self

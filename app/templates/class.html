@@ -52,7 +52,7 @@
             {{form.name(placeholder='Student name')}}<br>
             Students ID<br>
             {{form.student_id(placeholder='Student ID')}}<br>
-            {{ form.picture(**{'onchange':'loadFile(event)', 'class':'studentimage'}) }}<br>
+            {{ form.picture(**{'onchange':'loadFile(event)', 'class':'studentimage', 'accept': '.png,.jpg'}) }}<br>
             <img id="output"><br>
             <input type="submit">
 
