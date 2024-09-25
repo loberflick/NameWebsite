@@ -10,21 +10,27 @@ from hashlib import sha256
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 db = SQLAlchemy()
+# Set file path of database
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, "classes.db")
 app.config['SECRET_KEY'] = 'supersecretkey'
+# Set where pictures will be uploaded
 app.config["UPLOAD_FOLDER"] = 'static/images'
 WTF_CSRF_ENABLED = True
 WTF_CSRF_SECRET_KEY = 'evenmoresecretkey'
+
 db.init_app(app)
 
 # {"token": id}
 login_sessions = {}
 token_length = 16
+
 # {id: quiz()}
 current_quizzes = {}
 
+# Max value for any integers being entered into the database
 overflow_lim = 9223372036854775807
 
+# Algorithm to encrypt password with one way encryption
 hasher = sha256()
 
 
@@ -67,6 +73,7 @@ def home():
     if user:
         classes = models.Class.query.filter_by(teacher=user)
         classes_length = 0
+        # Find how many classes the user has
         for i in classes:
             classes_length += 1
         return render_template(
@@ -83,12 +90,14 @@ def home():
 def login():
     user = find_login(request.cookies.get("login_token"))
     form = Add_Account()
+    # Determine 
     valid_login = True
     if request.method == "POST":
         password = form.password.data
         accounts = models.Account.query.filter_by(username=form.username.data).first()
         print()
         if accounts is not None:
+            # Encrypt password to be compared with encrypted pasword in database
             hasher.update(password.encode(encoding="utf-8"))
             password = hasher.hexdigest()
             if str(password) == str(accounts.password):
