@@ -310,6 +310,13 @@ label {
     left: 10%;
 }
 
+.content .webinfo {
+    position: absolute;
+    height: 75%;
+    left: 53%;
+    width:50%;
+}
+
 .content .classitem{
     float: left;
     width: 100%;

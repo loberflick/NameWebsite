@@ -1,6 +1,20 @@
 {% extends 'layout.html' %}
 {% block content %}
 
+<div class="content">
+    <div class="webinfo">
+        <h1>
+            Website Information
+        </h1>
+        <p>
+            This is a quiz website teachers can use to learn the names of students in thier classes<br><br>
+            To get started you can add a class by clicking on the button on the top left of the site and clicking on add class. From there you can give the class a name, description and an image. After creating a class it will be viewable on the classes page.<br><br>
+            In order to be able to start a quiz a class will need at least 4 students. This can be done near the bottom of the class page. All students currently in the class will also be shown.<br><br>
+            Once a class has enough students the start quiz button will be shown and you will be able to click it to start a quiz. The quiz includes 10 questions and each question will show a picture of a student and 4 options of what this students name could be. If you select the correct answer then it will say correct and you can move onto the next question, if you guess inccorectly then it will give the correct answer and then you can move onto the next question. at the end of the quiz you will shown how many questions you got right and a button to go back to the class page. You will be able to resume any quizzes for any class at any time. by clicking resume quiz on the class page.  <br><br>
+        </p>
+    </div>
+</div>
+
 <div class="classbox">
     <h1>
         Classes
@@ -29,5 +43,8 @@
         {% endif %}
     </div>
 </div>
+
+
+
 
 {% endblock %}

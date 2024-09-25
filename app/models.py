@@ -1,7 +1,14 @@
 from app.routes import db
+from sqlalchemy_utils import EncryptedType
+from cryptography.fernet import Fernet
+from base64 import urlsafe_b64encode
 
-# PizzaTopping = db.Table('PizzaTopping', db.Column('pid', db.Integer, db.ForeignKey('Pizza.id')), db.Column('tid', db.Integer, db.ForeignKey('Topping.id')))
-StudentClass = db.Table('StudentClass', db.Column('sid', db.Integer, db.ForeignKey('Student.id')), db.Column('cid', db.Integer, db.ForeignKey('Class.id')))
+encryption_key = urlsafe_b64encode(b"Supersecurekeynoonewilleverknow")
+
+StudentClass = db.Table(
+    'StudentClass',
+    db.Column('sid', db.Integer, db.ForeignKey('Student.id')),
+    db.Column('cid', db.Integer, db.ForeignKey('Class.id')))
 
 
 class Account(db.Model):
@@ -18,10 +25,9 @@ class Account(db.Model):
 class Class(db.Model):
     __tablename__ = "Class"
     id = db.Column(db.Integer, primary_key=True)
-
-    name = db.Column(db.Text())
-    description = db.Column(db.Text())
-    picture = db.Column(db.Text())
+    name = db.Column(EncryptedType(db.Text(), encryption_key))
+    description = db.Column(EncryptedType(db.Text(), encryption_key))
+    picture = db.Column(EncryptedType(db.Text(), encryption_key))
     teacher = db.Column(db.Integer())
 
     students = db.relationship("Student", secondary="StudentClass", back_populates="classes")
@@ -34,8 +40,8 @@ class Student(db.Model):
     __tablename__ = "Student"
     id = db.Column(db.Integer, primary_key=True)
 
-    name = db.Column(db.Text())
-    picture = db.Column(db.Text())
+    name = db.Column(EncryptedType(db.Text(), encryption_key))
+    picture = db.Column(EncryptedType(db.Text(), encryption_key))
     student_id = db.Column(db.Text())
 
     classes = db.relationship("Class", secondary="StudentClass", back_populates="students")
